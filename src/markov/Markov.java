@@ -56,8 +56,14 @@ public class Markov {
         Entry<Pair<String, String>, Pair<String, Integer>>[] values = 
                 chain.entrySet().toArray(new Entry[chain.entrySet().size()]);
         int random = (int)(Math.random() * values.length);
-        String a = values[random].getKey().a, b = values[random].getKey().b;
+        String a, b;
         Pair<String, Integer> current = null;
+        
+        do {
+            a = values[(int)(Math.random() * values.length)].getKey().a;
+            b = values[(int)(Math.random() * values.length)].getKey().b;
+            current = chain.get(new Pair<String, String>(a, b));
+        } while(current == null);
         
         for(int i = 0; i < length; i++) {
             text.append(b).append(" ");
