@@ -23,7 +23,7 @@ public class Markov {
     
     public static void main(String[] args) throws IOException {
         Markov markov = new Markov("text.txt");
-        System.out.println(markov.generate(200));
+        System.out.println(markov.generate(100));
     }
     
     public void init() throws IOException {

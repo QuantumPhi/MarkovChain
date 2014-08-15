@@ -1,5 +1,6 @@
 /build/
 /bin/
+/text.txt
 /.classpath
 /.project
 /.settings
