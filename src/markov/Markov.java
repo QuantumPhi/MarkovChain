@@ -13,12 +13,18 @@ public class Markov {
     public File file;
     public Map<Pair<String, String>, Pair<String, Integer>> chain;
     
-    public Markov(String fileName) {
+    public Markov(String fileName) throws IOException {
         file = new File(fileName);
+        init();
+    }
+    
+    public static void main(String[] args) throws IOException {
+        Markov markov = new Markov("src/markov/text.txt");
+        System.out.println(markov.generate(250));
     }
     
     public void init() throws IOException {
-        chain = new HashMap<>();
+        chain = new HashMap<Pair<String, String>, Pair<String, Integer>>();
         
         BufferedReader reader = new BufferedReader(new FileReader(file));
         
@@ -32,7 +38,7 @@ public class Markov {
             c = next(reader);
             
             if(c == null)
-                return;
+                break;
             
             wordPair = new Pair<>(a, b);
             numPair = chain.get(wordPair);
@@ -45,13 +51,31 @@ public class Markov {
         }
     }
     
-    public String generate() {
+    public String generate(int length) {
         StringBuilder text = new StringBuilder();
         Entry<Pair<String, String>, Pair<String, Integer>>[] values = 
                 chain.entrySet().toArray(new Entry[chain.entrySet().size()]);
         int random = (int)(Math.random() * values.length);
-        StringBuilder value = new StringBuilder();
-        String a = null, b = null;
+        String a = values[random].getKey().a, b = values[random].getKey().b;
+        Pair<String, Integer> current = null;
+        
+        for(int i = 0; i < length; i++) {
+            text.append(b).append(" ");
+            
+            a = b;
+            b = current.a;
+            
+            current = chain.get(new Pair<String, String>(a, b));
+        }
+        
+        return text.toString();
+    }
+    
+    public static int sumTo(int value) {
+        int sum = 0;
+        for(int i = 1; i <= value; i++)
+            sum += i;
+        return sum;
     }
     
     public static String next(BufferedReader reader) throws IOException {
