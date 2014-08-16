@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class Markov {
     public File file;
-    public Map<Pair, List<String>> chain;
+    public Map<Pair, List<String>> wordMap;
     
     public Markov(String fileName) throws IOException {
         file = new File(fileName);
@@ -27,7 +27,7 @@ public class Markov {
     }
     
     public void init() throws IOException {
-        chain = new HashMap<Pair, List<String>>();
+        wordMap = new HashMap<Pair, List<String>>();
         
         BufferedReader reader = new BufferedReader(new FileReader(file));
         
@@ -43,11 +43,11 @@ public class Markov {
                 break;
             
             wordPair = new Pair(a, b);
-            values = chain.get(wordPair);
+            values = wordMap.get(wordPair);
             if(values == null) {
                 values = new ArrayList<>();
                 values.add(c);
-                chain.put(wordPair, values);
+                wordMap.put(wordPair, values);
             } else
                 values.add(c);
         }
@@ -56,23 +56,19 @@ public class Markov {
     public String generate(int length) {
         StringBuilder text = new StringBuilder();
         Entry<Pair, List<String>>[] values = 
-                chain.entrySet().toArray(new Entry[chain.size()]);
+                wordMap.entrySet().toArray(new Entry[wordMap.size()]);
         int random = (int)(Math.random() * values.length);
-        String a, b;
+        String a = values[random].getKey().a, b = values[random].getKey().b;
         List<String> current = null;
-        do {
-            a = values[(int)(Math.random() * values.length)].getKey().a;
-            b = values[(int)(Math.random() * values.length)].getKey().b;
-            current = chain.get(new Pair(a, b));
-        } while(current == null);
+        current = wordMap.get(new Pair(a, b));
         
         for(int i = 0; i < length; i++) {
-            text.append(b).append(" ");
+            text.append(a).append(" ");
             
             a = b;
             b = current.get((int)(Math.random() * current.size()));
             
-            current = chain.get(new Pair(a, b));
+            current = wordMap.get(new Pair(a, b));
         }
         
         return text.toString();
