@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-
 public class Markov {
     public File file;
     public Map<Pair, List<String>> wordMap;
@@ -59,16 +58,15 @@ public class Markov {
                 wordMap.entrySet().toArray(new Entry[wordMap.size()]);
         int random = (int)(Math.random() * values.length);
         String a = values[random].getKey().a, b = values[random].getKey().b;
-        List<String> current = null;
-        current = wordMap.get(new Pair(a, b));
+        List<String> current;
         
         for(int i = 0; i < length; i++) {
+            current = wordMap.get(new Pair(a, b));
+            
             text.append(a).append(" ");
             
             a = b;
             b = current.get((int)(Math.random() * current.size()));
-            
-            current = wordMap.get(new Pair(a, b));
         }
         
         return text.toString();
